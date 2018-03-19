@@ -1642,9 +1642,11 @@ def main():
             check = check_if_anything(screen, white, mousex, mousey) if k.whose_move == 'white' else \
                 check_if_anything(screen, black, mousex, mousey)
             for event in pygame.event.get():
-                if check[0]!='###' and pygame.MOUSEBUTTONDOWN:
+                print(check)
+                if check[0]!='###' and event.type==pygame.MOUSEBUTTONDOWN:
                     take = True
-                    print('hallo')
+                    print('got it')
+                    print(check)
                     hold = check[:]
                     holdpos=[mousex,mousey]
                 if event.type == pygame.MOUSEBUTTONUP and take:
@@ -1699,6 +1701,7 @@ def main():
                                 black[hold[0]][int(hold[1])].fixwith(holdpos[0],holdpos[1])
                             else:
                                 black[hold[0]].fixwith(holdpos[0],holdpos[1])
+            #just renews possible moves 4 the actual focused figure and checks if there is any
             if not take:
                 todrawlist = [[], [], [], []]
                 if check[0] == 'king':
@@ -1719,6 +1722,7 @@ def main():
                 elif check[0] == 'pawns':
                     todrawlist = mark_pos_pawn(screen, white, black, int(check[1])) if k.whose_move == 'white' else \
                         mark_pos_pawn(screen, black, white, int(check[1]))
+            #the problem that it doesnt fix the figure with the mouse
             if take:
                 if k.whose_move == 'white' and (hold[0] == 'king' or hold[0] == 'queen'):
                     white[hold[0]].fixwith(mousex, mousey)
