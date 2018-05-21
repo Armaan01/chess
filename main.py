@@ -1,12 +1,200 @@
-from pieces import Queen
-from pieces import King
-from pieces import Rock
-from pieces import Knight
-from pieces import Bishop
-from pieces import Pawn
-from UnoMove import Move
+
 import sys
 import pygame
+class Move():
+    def __init__(self):
+        self.whose_move='white'
+    def change_move(self):
+        self.whose_move='black' if self.whose_move=='white' else 'white'
+
+class King():
+    '''
+        describing king`s properties
+        self.x x coords
+        self.y y coords
+        colour - black or white
+        '''
+    def __init__(self,col):
+        self.colour=col
+        self.hitx=[]
+        self.hity = []
+        self.movex=self.hitx
+        self.movey=self.hity
+        if self.colour!='black':
+            self.x=4
+            self.y='A'
+        else:
+            self.x=4
+            self.y='H'
+    def update_pos(self,x,y,listhitx,listhity):
+        self.x=x
+        self.y=y
+        self.hity=listhity
+        self.hitx=listhitx
+    def fixwith(self,mousex,mousey):
+        self.x=mousex
+        self.y=mousey
+
+class Queen():
+    '''
+        describing queen`s properties
+        self.x x coords
+        self.y y coords
+        colour - black or white
+    '''
+    def __init__(self,col):
+        self.colour=col
+        self.hitx = []
+        self.hity = []
+        self.movex=self.hitx
+        self.movey=self.hity
+        self.dead=False
+        if self.colour!='black':
+            self.x=5
+            self.y='A'
+        else:
+            self.x=5
+            self.y='H'
+    def fixwith(self,mousex,mousey):
+        self.x=mousex
+        self.y=mousey
+
+class Rock():
+    '''
+        describing rock`s properties
+        self.x x coords
+        self.y y coords
+        colour - black or white
+    '''
+    def __init__(self,col,num):
+        self.colour=col
+        self.dead = False
+        self.hitx = []
+        self.hity = []
+        self.movex=self.hitx
+        self.movey=self.hity
+        if self.colour!='black' and num==0:
+            self.x=3
+            self.y='A'
+        elif num==1 and col!='black':
+            self.x=6
+            self.y='A'
+        elif num==0:
+            self.x=3
+            self.y='H'
+        else:
+            self.x=6
+            self.y='H'
+    def fixwith(self,mousex,mousey):
+        self.x=mousex
+        self.y=mousey
+
+class Knight():
+    '''
+        describing knight`s properties
+        self.x x coords
+        self.y y coords
+        colour - black or white
+    '''
+    def __init__(self,col,num):
+        self.colour=col
+        self.hitx = []
+        self.dead = False
+        self.hity = []
+        self.movex=self.hitx
+        self.movey=self.hity
+        if self.colour!='black' and num==0:
+            self.x=2
+            self.y='A'
+            self.hity=[1,3]
+            self.hitx=['C','C']
+        elif num==1 and col!='black':
+            self.x=7
+            self.y='A'
+            self.hity=[6,8]
+            self.hitx=['C','C']
+        elif num==0:
+            self.x=2
+            self.y='H'
+            self.hity=[1,3]
+            self.hitx=['F','F']
+        else:
+            self.x=7
+            self.y='H'
+            self.hity=[6,8]
+            self.hitx=['F','F']
+    def fixwith(self,mousex,mousey):
+        self.x=mousex
+        self.y=mousey
+
+class Bishop():
+    '''
+        describing bishop`s properties
+        self.x x coords
+        self.y y coords
+        colour - black or white
+    '''
+    def __init__(self,col,num):
+        self.colour=col
+        self.hitx = []
+        self.hity = []
+        self.dead = False
+        self.movex = self.hitx
+        self.movey = self.hity
+        if self.colour!='black' and num==0:
+            self.x=1
+            self.y='A'
+        elif num==1 and col!='black':
+            self.x=8
+            self.y='A'
+        elif num==0:
+            self.x=1
+            self.y='H'
+        else:
+            self.x=8
+            self.y='H'
+    def fixwith(self,mousex,mousey):
+        self.x=mousex
+        self.y=mousey
+
+class Pawn():
+    '''
+    describing pawn`s properties
+    self.x x coords
+    self.y y coords
+    colour - black or white
+    '''
+    def __init__(self,col,num):
+        self.colour=col
+        self.hitx = []
+        self.hity = []
+        self.movex=[]
+        self.dead = False
+        self.movey=[num+1,num+1]
+        self.moved=0
+        if self.colour=='black':
+            self.y='G'
+            self.movex=['G','G']
+            self.hity.append('F')
+        else:
+            self.y='B'
+            self.movex=['B','B']
+            self.hity.append('C')
+        self.x=num+1
+        if num==0:
+            self.hitx.append(2)
+        elif num==7:
+            self.hitx.append(7)
+        else:
+            self.hitx.append(num)
+            self.hitx.append(num+2)
+            l=self.hity[0]
+            self.hity.append(l)
+    def movedindeed(self):
+        self.moved=1
+    def fixwith(self,mousex,mousey):
+        self.x=mousex
+        self.y=mousey
 
 def change_move(k):
     k.whose_move='black' if k.whose_move=='white' else 'white'
@@ -230,26 +418,37 @@ def draw_all(screen, white, black, x_sp=-1, y_sp=-1, todrawlist=([], [], [], [])
             pygame.draw.rect(screen, (170, 10, 20), pygame.Rect(todrawcoords[0], todrawcoords[1], 90, 90))
 
     '''draw white'''
+
     draw_king(white, screen)
-    draw_queen(white, screen)
+    if not white['queen'].dead:
+        draw_queen(white, screen)
     for i in range(len(white['rocks'])):
-        draw_rock(white, screen, i)
+        if not white['rocks'][i].dead:
+            draw_rock(white, screen, i)
     for i in range(len(white['pawns'])):
-        draw_pawn(white, screen, i)
+        if not white['pawns'][i].dead:
+            draw_pawn(white, screen, i)
     for i in range(len(white['bishops'])):
-        draw_bishop(white, screen, i)
+        if not white['bishops'][i].dead:
+            draw_bishop(white, screen, i)
     for i in range(len(white['knights'])):
-        draw_knight(white, screen, i)
+        if not white['knights'][i].dead:
+            draw_knight(white, screen, i)
     '''draw black'''
     for i in range(len(black['rocks'])):
-        draw_rock(black, screen, i)
+        if not black['rocks'][i].dead:
+            draw_rock(black, screen, i)
     for i in range(len(black['pawns'])):
-        draw_pawn(black, screen, i)
+        if not black['pawns'][i].dead:
+            draw_pawn(black, screen, i)
     for i in range(len(black['bishops'])):
-        draw_bishop(black, screen, i)
+        if not black['bishops'][i].dead:
+            draw_bishop(black, screen, i)
     for i in range(len(black['knights'])):
-        draw_knight(black, screen, i)
-    draw_queen(black, screen)
+        if not black['knights'][i].dead:
+            draw_knight(black, screen, i)
+    if not black['queen'].dead:
+        draw_queen(black, screen)
     draw_king(black, screen)
     for i in range(9):
         pygame.draw.line(screen, (0, 0, 0), (10, i * 90 + 10), (720, i * 90 + 10), 2)
@@ -1697,27 +1896,26 @@ def main():
                         hold_figure.fixwith(mousex,mousey)
                         zetta=white if k.whose_move=='black' else black
                         if zetta['queen'].x==mousex and zetta['queen'].y==mousey:
-                            zetta['queen'].x=-100
-                            zetta['queen'].y='P'
+                            zetta['queen'].dead=True
                             movedone=True
                         for noidea in range(len(zetta['pawns'])):
                                 if zetta['pawns'][noidea].x==mousex and zetta['pawns'][noidea]==mousey:
-                                    zetta['pawns'].pop(noidea)
+                                    zetta['pawns'][noidea].dead=True
                                     movedone=True
                                     break
                         for noidea in range(len(zetta['knights'])):
                                 if zetta['knights'][noidea].x == mousex and zetta['knights'][noidea] == mousey:
-                                    zetta['knights'].pop(noidea)
+                                    zetta['knights'][noidea].dead=True
                                     movedone=True
                                     break
                         for noidea in range(len(zetta['bishops'])):
                                 if zetta['bishops'][noidea].x == mousex and zetta['bishops'][noidea] == mousey:
-                                    zetta['bishops'].pop(noidea)
+                                    zetta['bishops'][noidea].dead=True
                                     movedone=True
                                     break
                         for noidea in range(len(zetta['rocks'])):
                                 if zetta['rocks'][noidea].x == mousex and zetta['rocks'][noidea] == mousey:
-                                    zetta['rocks'].pop(noidea)
+                                    zetta['rocks'][noidea].dead=True
                                     movedone=True
                                     break
                 if movedone:
