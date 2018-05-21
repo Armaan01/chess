@@ -1,11 +1,18 @@
-
 import sys
 import pygame
+
+
 class Move():
     def __init__(self):
-        self.whose_move='white'
+        self.whose_move = 'white'
+        self.white_check = False
+        self.black_check = False
+        self.white_mat = False
+        self.black_mat = False
+
     def change_move(self):
-        self.whose_move='black' if self.whose_move=='white' else 'white'
+        self.whose_move = 'black' if self.whose_move == 'white' else 'white'
+
 
 class King():
     '''
@@ -14,26 +21,31 @@ class King():
         self.y y coords
         colour - black or white
         '''
-    def __init__(self,col):
-        self.colour=col
-        self.hitx=[]
+
+    def __init__(self, col):
+        self.colour = col
+        self.hitx = []
+        self.dead = False
         self.hity = []
-        self.movex=self.hitx
-        self.movey=self.hity
-        if self.colour!='black':
-            self.x=4
-            self.y='A'
+        self.movex = self.hitx
+        self.movey = self.hity
+        if self.colour != 'black':
+            self.x = 4
+            self.y = 'A'
         else:
-            self.x=4
-            self.y='H'
-    def update_pos(self,x,y,listhitx,listhity):
-        self.x=x
-        self.y=y
-        self.hity=listhity
-        self.hitx=listhitx
-    def fixwith(self,mousex,mousey):
-        self.x=mousex
-        self.y=mousey
+            self.x = 4
+            self.y = 'H'
+
+    def update_pos(self, x, y, listhitx, listhity):
+        self.x = x
+        self.y = y
+        self.hity = listhity
+        self.hitx = listhitx
+
+    def fixwith(self, mousex, mousey):
+        self.x = mousex
+        self.y = mousey
+
 
 class Queen():
     '''
@@ -42,22 +54,25 @@ class Queen():
         self.y y coords
         colour - black or white
     '''
-    def __init__(self,col):
-        self.colour=col
+
+    def __init__(self, col):
+        self.colour = col
         self.hitx = []
         self.hity = []
-        self.movex=self.hitx
-        self.movey=self.hity
-        self.dead=False
-        if self.colour!='black':
-            self.x=5
-            self.y='A'
+        self.movex = self.hitx
+        self.movey = self.hity
+        self.dead = False
+        if self.colour != 'black':
+            self.x = 5
+            self.y = 'A'
         else:
-            self.x=5
-            self.y='H'
-    def fixwith(self,mousex,mousey):
-        self.x=mousex
-        self.y=mousey
+            self.x = 5
+            self.y = 'H'
+
+    def fixwith(self, mousex, mousey):
+        self.x = mousex
+        self.y = mousey
+
 
 class Rock():
     '''
@@ -66,28 +81,31 @@ class Rock():
         self.y y coords
         colour - black or white
     '''
-    def __init__(self,col,num):
-        self.colour=col
+
+    def __init__(self, col, num):
+        self.colour = col
         self.dead = False
         self.hitx = []
         self.hity = []
-        self.movex=self.hitx
-        self.movey=self.hity
-        if self.colour!='black' and num==0:
-            self.x=3
-            self.y='A'
-        elif num==1 and col!='black':
-            self.x=6
-            self.y='A'
-        elif num==0:
-            self.x=3
-            self.y='H'
+        self.movex = self.hitx
+        self.movey = self.hity
+        if self.colour != 'black' and num == 0:
+            self.x = 3
+            self.y = 'A'
+        elif num == 1 and col != 'black':
+            self.x = 6
+            self.y = 'A'
+        elif num == 0:
+            self.x = 3
+            self.y = 'H'
         else:
-            self.x=6
-            self.y='H'
-    def fixwith(self,mousex,mousey):
-        self.x=mousex
-        self.y=mousey
+            self.x = 6
+            self.y = 'H'
+
+    def fixwith(self, mousex, mousey):
+        self.x = mousex
+        self.y = mousey
+
 
 class Knight():
     '''
@@ -96,36 +114,39 @@ class Knight():
         self.y y coords
         colour - black or white
     '''
-    def __init__(self,col,num):
-        self.colour=col
+
+    def __init__(self, col, num):
+        self.colour = col
         self.hitx = []
         self.dead = False
         self.hity = []
-        self.movex=self.hitx
-        self.movey=self.hity
-        if self.colour!='black' and num==0:
-            self.x=2
-            self.y='A'
-            self.hity=[1,3]
-            self.hitx=['C','C']
-        elif num==1 and col!='black':
-            self.x=7
-            self.y='A'
-            self.hity=[6,8]
-            self.hitx=['C','C']
-        elif num==0:
-            self.x=2
-            self.y='H'
-            self.hity=[1,3]
-            self.hitx=['F','F']
+        self.movex = self.hitx
+        self.movey = self.hity
+        if self.colour != 'black' and num == 0:
+            self.x = 2
+            self.y = 'A'
+            self.hity = [1, 3]
+            self.hitx = ['C', 'C']
+        elif num == 1 and col != 'black':
+            self.x = 7
+            self.y = 'A'
+            self.hity = [6, 8]
+            self.hitx = ['C', 'C']
+        elif num == 0:
+            self.x = 2
+            self.y = 'H'
+            self.hity = [1, 3]
+            self.hitx = ['F', 'F']
         else:
-            self.x=7
-            self.y='H'
-            self.hity=[6,8]
-            self.hitx=['F','F']
-    def fixwith(self,mousex,mousey):
-        self.x=mousex
-        self.y=mousey
+            self.x = 7
+            self.y = 'H'
+            self.hity = [6, 8]
+            self.hitx = ['F', 'F']
+
+    def fixwith(self, mousex, mousey):
+        self.x = mousex
+        self.y = mousey
+
 
 class Bishop():
     '''
@@ -134,28 +155,31 @@ class Bishop():
         self.y y coords
         colour - black or white
     '''
-    def __init__(self,col,num):
-        self.colour=col
+
+    def __init__(self, col, num):
+        self.colour = col
         self.hitx = []
         self.hity = []
         self.dead = False
         self.movex = self.hitx
         self.movey = self.hity
-        if self.colour!='black' and num==0:
-            self.x=1
-            self.y='A'
-        elif num==1 and col!='black':
-            self.x=8
-            self.y='A'
-        elif num==0:
-            self.x=1
-            self.y='H'
+        if self.colour != 'black' and num == 0:
+            self.x = 1
+            self.y = 'A'
+        elif num == 1 and col != 'black':
+            self.x = 8
+            self.y = 'A'
+        elif num == 0:
+            self.x = 1
+            self.y = 'H'
         else:
-            self.x=8
-            self.y='H'
-    def fixwith(self,mousex,mousey):
-        self.x=mousex
-        self.y=mousey
+            self.x = 8
+            self.y = 'H'
+
+    def fixwith(self, mousex, mousey):
+        self.x = mousex
+        self.y = mousey
+
 
 class Pawn():
     '''
@@ -164,40 +188,46 @@ class Pawn():
     self.y y coords
     colour - black or white
     '''
-    def __init__(self,col,num):
-        self.colour=col
+
+    def __init__(self, col, num):
+        self.colour = col
         self.hitx = []
         self.hity = []
-        self.movex=[]
+        self.movex = []
         self.dead = False
-        self.movey=[num+1,num+1]
-        self.moved=0
-        if self.colour=='black':
-            self.y='G'
-            self.movex=['G','G']
+        self.movey = [num + 1, num + 1]
+        self.moved = 0
+        if self.colour == 'black':
+            self.y = 'G'
+            self.movex = ['G', 'G']
             self.hity.append('F')
         else:
-            self.y='B'
-            self.movex=['B','B']
+            self.y = 'B'
+            self.movex = ['B', 'B']
             self.hity.append('C')
-        self.x=num+1
-        if num==0:
+        self.x = num + 1
+        if num == 0:
             self.hitx.append(2)
-        elif num==7:
+        elif num == 7:
             self.hitx.append(7)
         else:
             self.hitx.append(num)
-            self.hitx.append(num+2)
-            l=self.hity[0]
+            self.hitx.append(num + 2)
+            l = self.hity[0]
             self.hity.append(l)
+
     def movedindeed(self):
-        self.moved=1
-    def fixwith(self,mousex,mousey):
-        self.x=mousex
-        self.y=mousey
+        self.moved = 1
+
+    def fixwith(self, mousex, mousey):
+        self.x = mousex
+        self.y = mousey
+
 
 def change_move(k):
-    k.whose_move='black' if k.whose_move=='white' else 'white'
+    k.whose_move = 'black' if k.whose_move == 'white' else 'white'
+
+
 def get_pos(x, y):
     '''
     gets position by place on the board
@@ -517,7 +547,7 @@ def mark_pos_king(screen, col1, col2):
 
 def mark_pos_queen(screen, col1, col2):
     if col1['queen'].dead:
-        return [],[],[],[]
+        return [], [], [], []
     listtomovex = []
     listtomovey = []
     listtohitx = []
@@ -1031,7 +1061,7 @@ def mark_pos_queen(screen, col1, col2):
 
 def mark_pos_rock(screen, col1, col2, num):
     if col1['rocks'][num].dead:
-        return [],[],[],[]
+        return [], [], [], []
     listtomovex = []
     listtomovey = []
     listtohitx = []
@@ -1307,7 +1337,7 @@ def mark_pos_rock(screen, col1, col2, num):
 
 def mark_pos_bishop(screen, col1, col2, num):
     if col1['bishops'][num].dead:
-        return [],[],[],[]
+        return [], [], [], []
     listtomovex = []
     listtomovey = []
     listtohitx = []
@@ -1584,7 +1614,7 @@ def mark_pos_bishop(screen, col1, col2, num):
 
 def mark_pos_knight(screen, col1, col2, num):
     if col1['knights'][num].dead:
-        return [],[],[],[]
+        return [], [], [], []
     listtomovex = []
     listtomovey = []
     listtohitx = []
@@ -1651,7 +1681,7 @@ def mark_pos_knight(screen, col1, col2, num):
 
 def mark_pos_pawn(screen, col1, col2, num):
     if col1['pawns'][num].dead:
-        return [],[],[],[]
+        return [], [], [], []
     listtomovex = []
     listtomovey = []
     listtohitx = []
@@ -1724,6 +1754,7 @@ def mark_pos_pawn(screen, col1, col2, num):
         need2checkx = [-1, 1]
         need2checky = [-1, -1]
     if True:
+
         for k in range(len(need2checkx)):
             i = need2checkx[k]
             i1 = i
@@ -1783,6 +1814,41 @@ def check_if_anything(screen, col, x, y):
     return [s, str(-2)]
 
 
+def check_check_xd(screen, col1, col2, k: Move):
+    x1 = col1['king'].x
+    y1 = col1['king'].y
+    tohitx = []
+    tohity = []
+    listtocheck = mark_pos_queen(screen, col2, col1)
+    tohitx += listtocheck[2]
+    tohity += listtocheck[3]
+    listtocheck = mark_pos_king(screen, col2, col1)
+    tohity += listtocheck[3]
+    tohitx += listtocheck[2]
+    for i in range(len(col2['pawns'])):
+        listtocheck = mark_pos_pawn(screen, col2, col1, i)
+        tohitx += listtocheck[2]
+        tohity += listtocheck[3]
+    for i in range(len(col2['rocks'])):
+        listtocheck = mark_pos_rock(screen, col2, col1, i)
+        tohitx += listtocheck[2]
+        tohity += listtocheck[3]
+    for i in range(len(col2['bishops'])):
+        listtocheck = mark_pos_bishop(screen, col2, col1, i)
+        tohitx += listtocheck[2]
+        tohity += listtocheck[3]
+    for i in range(len(col2['knights'])):
+        listtocheck = mark_pos_knight(screen, col2, col1, i)
+        tohitx += listtocheck[2]
+        tohity += listtocheck[3]
+    for i in range(len(tohitx)):
+        if tohitx[i] == x1 and tohity[i] == y1:
+            if col1 == 'white':
+                k.white_check = True
+            else:
+                k.black_check = True
+
+
 def main():
     '''
     todrawlist shows list of spaces that are possible 4 moves and attack of the pointed/selected figure
@@ -1830,8 +1896,16 @@ def main():
     bishpos = [Bishop('black', 0), Bishop('black', 1)]
     black['bishops'] = bishpos[:]
     k = Move()
-    pawntocheck=Pawn('green',100)
+    pawntocheck = Pawn('green', 100)
+    font = pygame.font.Font(None, 25)
     while True:
+        pare = 'white' if k.whose_move == 'black' else 'black'
+        check_check_xd(screen, eval(k.whose_move), eval(pare), k)
+        if k.white_check:
+            text = font.render("white check", True, black)
+        elif k.black_check:
+            text = font.render('black check', True, black)
+
         dt = clock.tick(100) / 1000.0
         for event in pygame.event.get():
             if event.type == pygame.QUIT or \
@@ -1850,16 +1924,16 @@ def main():
             # check is list of 2 elems in case there is any piece in this spot and '###' of none
 
             if pygame.key.get_pressed()[pygame.K_z] and take:
-                take=False
-            if pygame.key.get_pressed()[pygame.K_a] and not take and check[0]!='###':
+                take = False
+            if pygame.key.get_pressed()[pygame.K_a] and not take and check[0] != '###':
 
-                take=True
+                take = True
                 todrawlist = [[], [], [], []]
                 if check[0] == 'king':
                     todrawlist = mark_pos_king(screen, white, black) if k.whose_move == 'white' else \
                         mark_pos_king(screen, black, white)
-                    hold_figure=white['king'] if k.whose_move=='white' else \
-                                black['king']
+                    hold_figure = white['king'] if k.whose_move == 'white' else \
+                        black['king']
                 elif check[0] == 'queen':
                     todrawlist = mark_pos_queen(screen, white, black) if k.whose_move == 'white' else \
                         mark_pos_queen(screen, black, white)
@@ -1887,23 +1961,28 @@ def main():
                     hold_figure = white['pawns'][int(check[1])] if k.whose_move == 'white' else \
                         black['pawns'][int(check[1])]
             elif pygame.key.get_pressed()[pygame.K_d] and take:
-                movedone=False
-                killed_figure=None
+                movedone = False
+                killed_figure = None
                 for specialcount in range(len(todrawlist[0])):
-                    if todrawlist[0][specialcount]==mousex and todrawlist[1][specialcount]==mousey:
-                        take=False
-                        hold_figure.fixwith(mousex,mousey)
-                        if type(hold_figure)==type(pawntocheck):
-                            hold_figure.moved=0
-                        movedone=True
+                    if todrawlist[0][specialcount] == mousex and todrawlist[1][specialcount] == mousey:
+                        take = False
+                        hold_figure.fixwith(mousex, mousey)
+                        if type(hold_figure) == type(pawntocheck):
+                            hold_figure.moved = 0
+                        movedone = True
                         break
 
                 for specialcount in range(len(todrawlist[2])):
-                    if todrawlist[2][specialcount]==mousex and todrawlist[3][specialcount]==mousey:
-                        take=False
-                        killed_figure=None
-                        hold_figure.fixwith(mousex,mousey)
-                        if k.whose_move=='black':
+                    if todrawlist[2][specialcount] == mousex and todrawlist[3][specialcount] == mousey:
+                        take = False
+                        killed_figure = None
+                        hold_figure.fixwith(mousex, mousey)
+                        if k.whose_move == 'black':
+
+                            if white['king'].x == mousex and white['king'].y == mousey:
+                                white['king'].dead = True
+                                killed_figure = white['king']
+                                movedone = True
 
                             if white['queen'].x == mousex and white['queen'].y == mousey:
                                 white['queen'].dead = True
@@ -1939,6 +2018,10 @@ def main():
                                 break
                         else:
                             black = white if k.whose_move == 'black' else black
+                            if black['king'].x == mousex and black['king'].y == mousey:
+                                black['king'].dead = True
+                                killed_figure = black['king']
+                                movedone = True
                             if black['queen'].x == mousex and black['queen'].y == mousey:
                                 black['queen'].dead = True
                                 killed_figure = black['queen']
@@ -1977,12 +2060,18 @@ def main():
 
                 if movedone:
                     print(None if killed_figure is None else killed_figure.dead)
-                    if type(hold_figure)==type(pawntocheck):
-                        hold_figure.moved=1
+                    if type(hold_figure) == type(pawntocheck):
+                        hold_figure.moved = 1
                     change_move(k)
-                    take=False
+                    take = False
                     print(k.whose_move)
-            #after here i mean
+                    if killed_figure == white['king'] or killed_figure == black['king']:
+                        fontObj = pygame.font.Font('freesansbold.ttf', 50)
+                        textSurfaceObj = fontObj.render('Game over!', True, 'yellow', 'blue')
+                        textRectObj = textSurfaceObj.get_rect()
+                        textRectObj.center = (500, 400)
+                        screen.blit(textSurfaceObj, textRectObj)
+            # after here i mean
             if not take:
                 todrawlist = [[], [], [], []]
                 if check[0] == 'king':
@@ -2003,9 +2092,10 @@ def main():
                 elif check[0] == 'pawns':
                     todrawlist = mark_pos_pawn(screen, white, black, int(check[1])) if k.whose_move == 'white' else \
                         mark_pos_pawn(screen, black, white, int(check[1]))
-            #after this block everything is known about spots 2 go and hit 2
+            # after this block everything is known about spots 2 go and hit 2
 
             draw_all(screen, white, black, mousex, mousey, todrawlist)
+
         else:
             draw_all(screen, white, black)
         pygame.display.flip()
