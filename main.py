@@ -8,7 +8,8 @@ from UnoMove import Move
 import sys
 import pygame
 
-
+def change_move(k):
+    k.whose_move='black' if k.whose_move=='white' else 'white'
 def get_pos(x, y):
     '''
     gets position by place on the board
@@ -21,7 +22,7 @@ def get_pos(x, y):
 
 
 def draw_bishop(col, screen, num):
-    if col['bishops'][num].x>1000:
+    if col['bishops'][num].x > 1000:
         return None
     if col['bishops'][num].colour == 'white':
         colour = (255, 255, 255)
@@ -69,9 +70,8 @@ def draw_bishop(col, screen, num):
                                          (coords[0] + 75, coords[1] - 75)])
 
 
-
 def draw_knight(col, screen, num):
-    if col['knights'][num].x>1000:
+    if col['knights'][num].x > 1000:
         return None
     if col['knights'][num].colour == 'white':
         colour = (255, 255, 255)
@@ -88,7 +88,6 @@ def draw_knight(col, screen, num):
         pygame.draw.ellipse(screen, super_colour, (coords[0] + 10, coords[1] - 50, 10, 40), 3)
         pygame.draw.rect(screen, super_colour, pygame.Rect(coords[0] + 25, coords[1] - 40, 8, 40), 3)
         pygame.draw.rect(screen, super_colour, pygame.Rect(coords[0] + 55, coords[1] - 40, 8, 40), 3)
-
     pygame.draw.ellipse(screen, colour, (coords[0] + 10, coords[1] - 60, 70, 40))
     pygame.draw.ellipse(screen, colour, (coords[0] + 60, coords[1] - 80, 10, 40))
     pygame.draw.ellipse(screen, colour, (coords[0] + 60, coords[1] - 80, 20, 10))
@@ -98,7 +97,7 @@ def draw_knight(col, screen, num):
 
 
 def draw_king(col, screen):
-    if col['king'].x>1000:
+    if col['king'].x > 1000:
         return None
     if col['king'].colour == 'white':
         colour = (255, 255, 255)
@@ -123,7 +122,7 @@ def draw_king(col, screen):
 
 
 def draw_queen(col, screen):
-    if col['queen'].x>1000:
+    if col['queen'].x > 1000:
         return None
     if col['queen'].colour == 'white':
         colour = (255, 255, 255)
@@ -150,7 +149,7 @@ def draw_queen(col, screen):
 
 
 def draw_rock(col, screen, num):
-    if col['rocks'][num].x>1000:
+    if col['rocks'][num].x > 1000:
         return None
     if col['rocks'][num].colour == 'white':
         colour = (255, 255, 255)
@@ -178,7 +177,7 @@ def draw_rock(col, screen, num):
 
 
 def draw_pawn(col, screen, num):
-    if col['pawns'][num].x>1000:
+    if col['pawns'][num].x > 1000:
         return None
     if col['pawns'][num].colour == 'white':
         colour = (255, 255, 255)
@@ -209,8 +208,8 @@ def draw_all(screen, white, black, x_sp=-1, y_sp=-1, todrawlist=([], [], [], [])
 
     '''draw board itself'''
     screen.fill((255, 255, 255))
-    pygame.draw.rect(screen, (120, 70, 0), pygame.Rect(5, 5, 730, 730))
-    pygame.draw.rect(screen, (245, 220, 190), pygame.Rect(10, 10, 720, 720))
+    pygame.draw.rect(screen, (120, 70, 0), pygame.Rect(5, 5, 735, 735))
+    pygame.draw.rect(screen, (245, 220, 190), pygame.Rect(10, 10, 730, 730))
     for i in range(8):
         for j in range(8):
             if (i + j) % 2 == 0:
@@ -1581,6 +1580,11 @@ def check_if_anything(screen, col, x, y):
 
 
 def main():
+    '''
+    todrawlist shows list of spaces that are possible 4 moves and attack of the pointed/selected figure
+
+    None to be returned
+    '''
     pygame.init()
     width = 1500
     height = 1000
@@ -1622,18 +1626,16 @@ def main():
     bishpos = [Bishop('black', 0), Bishop('black', 1)]
     black['bishops'] = bishpos[:]
     k = Move()
+    pawntocheck=Pawn('green',100)
     while True:
-        dt = clock.tick(50) / 1000.0
+        dt = clock.tick(100) / 1000.0
         for event in pygame.event.get():
-            if event.type == pygame.QUIT or (
-                                        event.type == pygame.KEYDOWN
-                                and event.key != pygame.K_UP
-                            and event.key != pygame.K_RIGHT
-                        and event.key != pygame.K_LEFT
-                    and event.key != pygame.K_DOWN
-            ):
+            if event.type == pygame.QUIT or \
+                    (event.type == pygame.KEYDOWN
+                     and event.key == pygame.K_ESCAPE):
                 sys.exit()
         coords = pygame.mouse.get_pos()
+        # coords inted tuple of coords
         coords = (int(coords[0]), int(coords[1]))
         if 10 <= coords[0] <= 730 and 10 <= coords[1] <= 730:
             coords = ((coords[0] - 10) // 90, (coords[1] - 10) // 90)
@@ -1641,67 +1643,88 @@ def main():
             mousey = chr(((7 - coords[1]) + ord('A')))
             check = check_if_anything(screen, white, mousex, mousey) if k.whose_move == 'white' else \
                 check_if_anything(screen, black, mousex, mousey)
-            for event in pygame.event.get():
-                print(check)
-                if check[0]!='###' and event.type==pygame.MOUSEBUTTONDOWN:
-                    take = True
-                    print('got it')
-                    print(check)
-                    hold = check[:]
-                    holdpos=[mousex,mousey]
-                if event.type == pygame.MOUSEBUTTONUP and take:
-                    found=False
-                    for count1 in range(todrawlist[2]):
-                        if todrawlist[2][count1]==mousex and todrawlist[3][count1]==mousey:
-                            if k.whose_move=='white':
-                                if int(hold[1])==-1:
-                                    black[check[0]].fixwith(1200,1200)
-                                else:
-                                    black[check[0]][int(check[1])].fixwith(1200,1200)
-                                if hold[1]!=-1:
-                                    white[hold[0]][int(hold[1])].fixwith(mousex,mousey)
-                                else:
-                                    white[hold[0]].fixwith(mousex,mousey)
-                            else:
-                                if int(hold[1]) == -1:
-                                    white[check[0]].fixwith(1200, 1200)
-                                else:
-                                    white[check[0]][int(check[1])].fixwith(1200, 1200)
-                                if hold[1]!=-1:
-                                    black[hold[0]][int(hold[1])].fixwith(mousex,mousey)
-                                else:
-                                    black[hold[0]].fixwith(mousex,mousey)
-                            take=False
-                            found=True
-                            k.change_move()
-                    for count1 in range(todrawlist[1]):
-                        if todrawlist[1][count1]==mousey and todrawlist[0][count1]==mousex:
-                            if k.whose_move=='white':
-                                if hold[1]!=-1:
-                                    white[hold[0]][int(hold[1])].fixwith(mousex,mousey)
-                                else:
-                                    white[hold[0]].fixwith(mousex,mousey)
-                            else:
-                                if hold[1]!=-1:
-                                    black[hold[0]][int(hold[1])].fixwith(mousex,mousey)
-                                else:
-                                    black[hold[0]].fixwith(mousex,mousey)
-                                take=False
-                                found=True
-                                k.change_move()
-                    if not found:
+            # check is list of 2 elems in case there is any piece in this spot and '###' of none
+
+
+            if pygame.key.get_pressed()[pygame.K_a] and not take and check[0]!='###':
+
+                take=True
+                todrawlist = [[], [], [], []]
+                if check[0] == 'king':
+                    todrawlist = mark_pos_king(screen, white, black) if k.whose_move == 'white' else \
+                        mark_pos_king(screen, black, white)
+                    hold_figure=white['king'] if k.whose_move=='white' else \
+                                black['king']
+                elif check[0] == 'queen':
+                    todrawlist = mark_pos_queen(screen, white, black) if k.whose_move == 'white' else \
+                        mark_pos_queen(screen, black, white)
+                    hold_figure = white['queen'] if k.whose_move == 'white' else \
+                        black['queen']
+                elif check[0] == 'rocks':
+                    todrawlist = mark_pos_rock(screen, white, black, int(check[1])) if k.whose_move == 'white' else \
+                        mark_pos_rock(screen, black, white, int(check[1]))
+                    hold_figure = white['rocks'][int(check[1])] if k.whose_move == 'white' else \
+                        black['rocks'][int(check[1])]
+                elif check[0] == 'bishops':
+                    todrawlist = mark_pos_bishop(screen, white, black, int(check[1])) if k.whose_move == 'white' else \
+                        mark_pos_bishop(screen, black, white, int(check[1]))
+                    hold_figure = white['bishops'][int(check[1])] if k.whose_move == 'white' else \
+                        black['bishops'][int(check[1])]
+                elif check[0] == 'knights':
+                    todrawlist = mark_pos_knight(screen, white, black, int(check[1])) if k.whose_move == 'white' else \
+                        mark_pos_knight(screen, black, white, int(check[1]))
+                    hold_figure = white['knights'][int(check[1])] if k.whose_move == 'white' else \
+                        black['knights'][int(check[1])]
+                elif check[0] == 'pawns':
+
+                    todrawlist = mark_pos_pawn(screen, white, black, int(check[1])) if k.whose_move == 'white' else \
+                        mark_pos_pawn(screen, black, white, int(check[1]))
+                    hold_figure = white['pawns'][int(check[1])] if k.whose_move == 'white' else \
+                        black['pawns'][int(check[1])]
+            elif pygame.key.get_pressed()[pygame.K_d] and take:
+                movedone=False
+                for specialcount in range(len(todrawlist[0])):
+                    if todrawlist[0][specialcount]==mousex and todrawlist[1][specialcount]==mousey:
                         take=False
-                        if k.whose_move == 'white':
-                            if hold[1] != -1:
-                                white[hold[0]][int(hold[1])].fixwith(holdpos[0],holdpos[1])
-                            else:
-                                white[hold[0]].fixwith(holdpos[0],holdpos[1])
-                        else:
-                            if hold[1] != -1:
-                                black[hold[0]][int(hold[1])].fixwith(holdpos[0],holdpos[1])
-                            else:
-                                black[hold[0]].fixwith(holdpos[0],holdpos[1])
-            #just renews possible moves 4 the actual focused figure and checks if there is any
+                        hold_figure.fixwith(mousex,mousey)
+                        if type(hold_figure)==type(pawntocheck):
+                            hold_figure.moved=0
+                        movedone=True
+                        break
+                for specialcount in range(len(todrawlist[2])):
+                    if todrawlist[2][specialcount]==mousex and todrawlist[3][specialcount]==mousey:
+                        take=False
+                        hold_figure.fixwith(mousex,mousey)
+                        zetta=white if k.whose_move=='black' else black
+                        if zetta['queen'].x==mousex and zetta['queen'].y==mousey:
+                            zetta['queen'].x=-100
+                            zetta['queen'].y='P'
+                            movedone=True
+                        for noidea in range(len(zetta['pawns'])):
+                                if zetta['pawns'][noidea].x==mousex and zetta['pawns'][noidea]==mousey:
+                                    zetta['pawns'].pop(noidea)
+                                    movedone=True
+                                    break
+                        for noidea in range(len(zetta['knights'])):
+                                if zetta['knights'][noidea].x == mousex and zetta['knights'][noidea] == mousey:
+                                    zetta['knights'].pop(noidea)
+                                    movedone=True
+                                    break
+                        for noidea in range(len(zetta['bishops'])):
+                                if zetta['bishops'][noidea].x == mousex and zetta['bishops'][noidea] == mousey:
+                                    zetta['bishops'].pop(noidea)
+                                    movedone=True
+                                    break
+                        for noidea in range(len(zetta['rocks'])):
+                                if zetta['rocks'][noidea].x == mousex and zetta['rocks'][noidea] == mousey:
+                                    zetta['rocks'].pop(noidea)
+                                    movedone=True
+                                    break
+                if movedone:
+                    print(100)
+                    change_move(k)
+                    print(k.whose_move)
+            #after here i mean
             if not take:
                 todrawlist = [[], [], [], []]
                 if check[0] == 'king':
@@ -1722,16 +1745,7 @@ def main():
                 elif check[0] == 'pawns':
                     todrawlist = mark_pos_pawn(screen, white, black, int(check[1])) if k.whose_move == 'white' else \
                         mark_pos_pawn(screen, black, white, int(check[1]))
-            #the problem that it doesnt fix the figure with the mouse
-            if take:
-                if k.whose_move == 'white' and (hold[0] == 'king' or hold[0] == 'queen'):
-                    white[hold[0]].fixwith(mousex, mousey)
-                elif k.whose_move == 'white':
-                    white[hold[0]][int(check[1])].fixwith(mousex, mousey)
-                elif k.whose_move == 'black' and (hold[0] == 'king' or hold[0] == 'queen'):
-                    black[hold[0]].fixwith(mousex, mousey)
-                else:
-                    black[hold[0]][int(check[1])].fixwith(mousex, mousey)
+            #after this block everything is known about spots 2 go and hit 2
 
             draw_all(screen, white, black, mousex, mousey, todrawlist)
         else:
