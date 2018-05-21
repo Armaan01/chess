@@ -1999,13 +1999,12 @@ def main():
                                 white['queen'].dead = True
                                 killed_figure = white['queen']
                                 movedone = True
+
                             for noidea in range(len(white['pawns'])):
                                 if white['pawns'][noidea].x == mousex and white['pawns'][noidea].y == mousey:
                                     white['pawns'][noidea].dead = True
                                     killed_figure = white['pawns'][noidea]
                                     movedone = True
-
-                                    print(white['pawns'][noidea].dead)
                                     break
                             for noidea in range(len(white['knights'])):
                                 if white['knights'][noidea].x == mousex and white['knights'][noidea].y == mousey:
@@ -2042,11 +2041,8 @@ def main():
                                     black['pawns'][noidea].dead = True
                                     killed_figure = black['pawns'][noidea]
                                     movedone = True
-                                    print(black['pawns'][noidea].dead)
                                     break
-                                else:
-                                    print(black['pawns'][noidea].x, ' ', black['pawns'][noidea].y, ' ', mousex, ' ',
-                                          mousey)
+
 
                             for noidea in range(len(black['knights'])):
                                 if black['knights'][noidea].x == mousex and black['knights'][noidea].y == mousey:
@@ -2070,12 +2066,11 @@ def main():
                                 break
 
                 if movedone:
-                    print(None if killed_figure is None else killed_figure.dead)
+
                     if type(hold_figure) == type(pawntocheck):
                         hold_figure.moved = 1
                     change_move(k)
                     take = False
-                    print(k.whose_move)
                     if killed_figure == white['king'] or killed_figure == black['king']:
                         fontObj = pygame.font.Font('freesansbold.ttf', 50)
                         textSurfaceObj = fontObj.render('Game over!', True, 'yellow', 'blue')
