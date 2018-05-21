@@ -406,7 +406,7 @@ def draw_all(screen, white, black, x_sp=-1, y_sp=-1, todrawlist=([], [], [], [])
         coords_sp = get_pos(x_sp, y_sp)
         coords_sp = (coords_sp[0], coords_sp[1] - 90)
         pygame.draw.rect(screen, (10, 190, 20), pygame.Rect(coords_sp[0], coords_sp[1], 90, 90))
-    if todrawlist[0] != []:
+    if todrawlist != [] and todrawlist[0] != []:
         for z in range(len(todrawlist[0])):
             todrawcoords = get_pos(todrawlist[0][z], todrawlist[1][z])
             todrawcoords = (todrawcoords[0], todrawcoords[1] - 90)
@@ -516,6 +516,8 @@ def mark_pos_king(screen, col1, col2):
 
 
 def mark_pos_queen(screen, col1, col2):
+    if col1['queen'].dead:
+        return [],[],[],[]
     listtomovex = []
     listtomovey = []
     listtohitx = []
@@ -1028,6 +1030,8 @@ def mark_pos_queen(screen, col1, col2):
 
 
 def mark_pos_rock(screen, col1, col2, num):
+    if col1['rocks'][num].dead:
+        return [],[],[],[]
     listtomovex = []
     listtomovey = []
     listtohitx = []
@@ -1302,6 +1306,8 @@ def mark_pos_rock(screen, col1, col2, num):
 
 
 def mark_pos_bishop(screen, col1, col2, num):
+    if col1['bishops'][num].dead:
+        return [],[],[],[]
     listtomovex = []
     listtomovey = []
     listtohitx = []
@@ -1577,6 +1583,8 @@ def mark_pos_bishop(screen, col1, col2, num):
 
 
 def mark_pos_knight(screen, col1, col2, num):
+    if col1['knights'][num].dead:
+        return [],[],[],[]
     listtomovex = []
     listtomovey = []
     listtohitx = []
@@ -1592,7 +1600,6 @@ def mark_pos_knight(screen, col1, col2, num):
         tochecky = chr(ord((col1['knights'][num].y)) + j)
         if 1 <= tocheckx <= 8 and 'A' <= tochecky <= 'H':
             f = True
-            cont2check = True
             if col1['king'].x == tocheckx and col1['king'].y == tochecky:
                 f = False
 
@@ -1643,6 +1650,8 @@ def mark_pos_knight(screen, col1, col2, num):
 
 
 def mark_pos_pawn(screen, col1, col2, num):
+    if col1['pawns'][num].dead:
+        return [],[],[],[]
     listtomovex = []
     listtomovey = []
     listtohitx = []
@@ -1708,7 +1717,7 @@ def mark_pos_pawn(screen, col1, col2, num):
                     listtomovey.append(tochecky)
             else:
                 sup = True
-    if col1['pawns'][num] == 'white':
+    if col1['pawns'][num].colour == 'white':
         need2checkx = [1, -1]
         need2checky = [1, 1]
     else:
@@ -1744,7 +1753,6 @@ def mark_pos_pawn(screen, col1, col2, num):
                 if enemy:
                     listtohitx.append(tocheckx)
                     listtohity.append(tochecky)
-    print(listtohitx,' ',listtohity)
     return (listtomovex, listtomovey, listtohitx, listtohity)
 
 
@@ -1891,6 +1899,7 @@ def main():
                 for specialcount in range(len(todrawlist[2])):
                     if todrawlist[2][specialcount]==mousex and todrawlist[3][specialcount]==mousey:
                         take=False
+                        killed_figure=None
                         hold_figure.fixwith(mousex,mousey)
                         zetta=white if k.whose_move=='black' else black
                         if zetta['queen'].x==mousex and zetta['queen'].y==mousey:
@@ -1900,6 +1909,8 @@ def main():
                                 if zetta['pawns'][noidea].x==mousex and zetta['pawns'][noidea]==mousey:
                                     zetta['pawns'][noidea].dead=True
                                     movedone=True
+
+                                    print(zetta['pawns'][noidea].dead)
                                     break
                         for noidea in range(len(zetta['knights'])):
                                 if zetta['knights'][noidea].x == mousex and zetta['knights'][noidea] == mousey:
