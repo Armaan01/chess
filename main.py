@@ -1766,22 +1766,22 @@ def mark_pos_pawn(screen, col1, col2, num):
             for count in range(len(col1['bishops'])):
                 if col1['bishops'][count].x == tocheckx and col1['bishops'][count].y == tochecky:
                     f = False
-                if col2['king'].x == tocheckx and col2['king'].y == tochecky:
+            if col2['king'].x == tocheckx and col2['king'].y == tochecky:
+                f = False
+            if col2['queen'].x == tocheckx and col2['queen'].y == tochecky:
+                f = False
+            for count in range(len(col2['pawns'])):
+                if col2['pawns'][count].x == tocheckx and col2['pawns'][count].y == tochecky:
                     f = False
-                if col2['queen'].x == tocheckx and col2['queen'].y == tochecky:
+            for count in range(len(col2['knights'])):
+                if col2['knights'][count].x == tocheckx and col2['knights'][count].y == tochecky:
                     f = False
-                for count in range(len(col2['pawns'])):
-                    if col2['pawns'][count].x == tocheckx and col2['pawns'][count].y == tochecky:
-                        f = False
-                for count in range(len(col2['knights'])):
-                    if col2['knights'][count].x == tocheckx and col2['knights'][count].y == tochecky:
-                        f = False
-                for count in range(len(col2['rocks'])):
-                    if col2['rocks'][count].x == tocheckx and col2['rocks'][count].y == tochecky:
-                        f = False
-                for count in range(len(col1['bishops'])):
-                    if col2['bishops'][count].x == tocheckx and col2['bishops'][count].y == tochecky:
-                        f = False
+            for count in range(len(col2['rocks'])):
+                if col2['rocks'][count].x == tocheckx and col2['rocks'][count].y == tochecky:
+                    f = False
+            for count in range(len(col1['bishops'])):
+                if col2['bishops'][count].x == tocheckx and col2['bishops'][count].y == tochecky:
+                    f = False
 
             if k % 2 == 0:
                 sup = False
@@ -2072,6 +2072,7 @@ def main():
                     change_move(k)
                     take = False
                     if killed_figure == white['king'] or killed_figure == black['king']:
+                        exit()
                         fontObj = pygame.font.Font('freesansbold.ttf', 50)
                         textSurfaceObj = fontObj.render('Game over!', True, 'yellow', 'blue')
                         textRectObj = textSurfaceObj.get_rect()
