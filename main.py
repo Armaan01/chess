@@ -1914,7 +1914,6 @@ def main():
                                     white['pawns'][noidea].dead = True
                                     killed_figure = white['pawns'][noidea]
                                     movedone = True
-                                else:
 
                                     print(white['pawns'][noidea].dead)
                                     break
