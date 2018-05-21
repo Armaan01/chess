@@ -1888,6 +1888,7 @@ def main():
                         black['pawns'][int(check[1])]
             elif pygame.key.get_pressed()[pygame.K_d] and take:
                 movedone=False
+                killed_figure=None
                 for specialcount in range(len(todrawlist[0])):
                     if todrawlist[0][specialcount]==mousex and todrawlist[1][specialcount]==mousey:
                         take=False
@@ -1896,41 +1897,87 @@ def main():
                             hold_figure.moved=0
                         movedone=True
                         break
+
                 for specialcount in range(len(todrawlist[2])):
                     if todrawlist[2][specialcount]==mousex and todrawlist[3][specialcount]==mousey:
                         take=False
                         killed_figure=None
                         hold_figure.fixwith(mousex,mousey)
-                        zetta=white if k.whose_move=='black' else black
-                        if zetta['queen'].x==mousex and zetta['queen'].y==mousey:
-                            zetta['queen'].dead=True
-                            movedone=True
-                        for noidea in range(len(zetta['pawns'])):
-                                if zetta['pawns'][noidea].x==mousex and zetta['pawns'][noidea]==mousey:
-                                    zetta['pawns'][noidea].dead=True
-                                    movedone=True
+                        if k.whose_move=='black':
 
-                                    print(zetta['pawns'][noidea].dead)
+                            if white['queen'].x == mousex and white['queen'].y == mousey:
+                                white['queen'].dead = True
+                                killed_figure = white['queen']
+                                movedone = True
+                            for noidea in range(len(white['pawns'])):
+                                if white['pawns'][noidea].x == mousex and white['pawns'][noidea].y == mousey:
+                                    white['pawns'][noidea].dead = True
+                                    killed_figure = white['pawns'][noidea]
+                                    movedone = True
+                                else:
+
+                                    print(white['pawns'][noidea].dead)
                                     break
-                        for noidea in range(len(zetta['knights'])):
-                                if zetta['knights'][noidea].x == mousex and zetta['knights'][noidea] == mousey:
-                                    zetta['knights'][noidea].dead=True
-                                    movedone=True
+                            for noidea in range(len(white['knights'])):
+                                if white['knights'][noidea].x == mousex and white['knights'][noidea].y == mousey:
+                                    white['knights'][noidea].dead = True
+                                    killed_figure = white['knights'][noidea]
+                                    movedone = True
                                     break
-                        for noidea in range(len(zetta['bishops'])):
-                                if zetta['bishops'][noidea].x == mousex and zetta['bishops'][noidea] == mousey:
-                                    zetta['bishops'][noidea].dead=True
-                                    movedone=True
+                            for noidea in range(len(white['bishops'])):
+                                if white['bishops'][noidea].x == mousex and white['bishops'][noidea].y == mousey:
+                                    white['bishops'][noidea].dead = True
+                                    movedone = True
+                                    killed_figure = white['bishops'][noidea]
                                     break
-                        for noidea in range(len(zetta['rocks'])):
-                                if zetta['rocks'][noidea].x == mousex and zetta['rocks'][noidea] == mousey:
-                                    zetta['rocks'][noidea].dead=True
-                                    movedone=True
+                            for noidea in range(len(white['rocks'])):
+                                if white['rocks'][noidea].x == mousex and white['rocks'][noidea].y == mousey:
+                                    white['rocks'][noidea].dead = True
+                                    movedone = True
+                                    killed_figure = white['rocks'][noidea]
                                     break
-                        if movedone:
-                            break
+                            if movedone:
+                                break
+                        else:
+                            black = white if k.whose_move == 'black' else black
+                            if black['queen'].x == mousex and black['queen'].y == mousey:
+                                black['queen'].dead = True
+                                killed_figure = black['queen']
+                                movedone = True
+                            for noidea in range(len(black['pawns'])):
+                                if black['pawns'][noidea].x == mousex and black['pawns'][noidea].y == mousey:
+                                    black['pawns'][noidea].dead = True
+                                    killed_figure = black['pawns'][noidea]
+                                    movedone = True
+                                    print(black['pawns'][noidea].dead)
+                                    break
+                                else:
+                                    print(black['pawns'][noidea].x, ' ', black['pawns'][noidea].y, ' ', mousex, ' ',
+                                          mousey)
+
+                            for noidea in range(len(black['knights'])):
+                                if black['knights'][noidea].x == mousex and black['knights'][noidea].y == mousey:
+                                    black['knights'][noidea].dead = True
+                                    killed_figure = black['knights'][noidea]
+                                    movedone = True
+                                    break
+                            for noidea in range(len(black['bishops'])):
+                                if black['bishops'][noidea].x == mousex and black['bishops'][noidea].y == mousey:
+                                    black['bishops'][noidea].dead = True
+                                    movedone = True
+                                    killed_figure = black['bishops'][noidea]
+                                    break
+                            for noidea in range(len(black['rocks'])):
+                                if black['rocks'][noidea].x == mousex and black['rocks'][noidea].y == mousey:
+                                    black['rocks'][noidea].dead = True
+                                    movedone = True
+                                    killed_figure = black['rocks'][noidea]
+                                    break
+                            if movedone:
+                                break
+
                 if movedone:
-                    print(100)
+                    print(None if killed_figure is None else killed_figure.dead)
                     if type(hold_figure)==type(pawntocheck):
                         hold_figure.moved=1
                     change_move(k)
