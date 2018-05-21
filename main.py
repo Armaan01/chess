@@ -525,10 +525,13 @@ def draw_all(screen, white, black, x_sp=-1, y_sp=-1, todrawlist=([], [], [], [])
         pygame.draw.line(screen, (0, 0, 0), (10, i * 90 + 10), (720, i * 90 + 10), 2)
         pygame.draw.line(screen, (0, 0, 0), (10 + i * 90, 10), (10 + i * 90, 720), 2)
 
+
 '''
 every mark_pos_#entername#
 shows all spots for figures to g and to hit
 '''
+
+
 def mark_pos_king(screen, col1, col2):
     listtomovex = []
     listtomovey = []
@@ -1866,7 +1869,6 @@ def check_if_anything(screen, col, x, y):
     return [s, str(-2)]
 
 
-
 def main():
     '''
     todrawlist shows list of spaces that are possible 4 moves and attack of the pointed/selected figure
@@ -2042,7 +2044,6 @@ def main():
                                     killed_figure = black['pawns'][noidea]
                                     movedone = True
                                     break
-
 
                             for noidea in range(len(black['knights'])):
                                 if black['knights'][noidea].x == mousex and black['knights'][noidea].y == mousey:
