@@ -1648,7 +1648,7 @@ def mark_pos_pawn(screen, col1, col2, num):
     listtohitx = []
     listtohity = []
     sup = False
-    if col1['pawns'][num] == 'white':
+    if col1['pawns'][num].colour == 'white':
         need2checkx = [0]
         need2checky = [1]
         if col1['pawns'][num].moved == 0:
@@ -1656,20 +1656,17 @@ def mark_pos_pawn(screen, col1, col2, num):
             need2checky.append(2)
     else:
         need2checkx = [0]
-        need2checky = [1]
+        need2checky = [-1]
         if col1['pawns'][num].moved == 0:
             need2checkx.append(0)
-            need2checky.append(2)
+            need2checky.append(-2)
     for k in range(len(need2checkx)):
         i = need2checkx[k]
-        i1 = i
-        enemy = False
         j = need2checky[k]
         tocheckx = col1['pawns'][num].x + i
         tochecky = chr(ord((col1['pawns'][num].y)) + j)
         if 1 <= tocheckx <= 8 and 'A' <= tochecky <= 'H':
             f = True
-            cont2check = True
             if col1['king'].x == tocheckx and col1['king'].y == tochecky:
                 f = False
             if col1['queen'].x == tocheckx and col1['queen'].y == tochecky:
@@ -1715,7 +1712,7 @@ def mark_pos_pawn(screen, col1, col2, num):
         need2checkx = [1, -1]
         need2checky = [1, 1]
     else:
-        need2checkx = [1, -1]
+        need2checkx = [-1, 1]
         need2checky = [-1, -1]
     if True:
         for k in range(len(need2checkx)):
@@ -1743,11 +1740,11 @@ def mark_pos_pawn(screen, col1, col2, num):
                         enemy = True
                 for count in range(len(col1['bishops'])):
                     if col2['bishops'][count].x == tocheckx and col2['bishops'][count].y == tochecky:
-                        f = False
                         enemy = True
                 if enemy:
                     listtohitx.append(tocheckx)
                     listtohity.append(tochecky)
+    print(listtohitx,' ',listtohity)
     return (listtomovex, listtomovey, listtohitx, listtohity)
 
 
@@ -1844,7 +1841,8 @@ def main():
                 check_if_anything(screen, black, mousex, mousey)
             # check is list of 2 elems in case there is any piece in this spot and '###' of none
 
-
+            if pygame.key.get_pressed()[pygame.K_z] and take:
+                take=False
             if pygame.key.get_pressed()[pygame.K_a] and not take and check[0]!='###':
 
                 take=True
@@ -1918,9 +1916,14 @@ def main():
                                     zetta['rocks'][noidea].dead=True
                                     movedone=True
                                     break
+                        if movedone:
+                            break
                 if movedone:
                     print(100)
+                    if type(hold_figure)==type(pawntocheck):
+                        hold_figure.moved=1
                     change_move(k)
+                    take=False
                     print(k.whose_move)
             #after here i mean
             if not take:
