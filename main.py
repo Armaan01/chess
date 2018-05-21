@@ -225,6 +225,11 @@ class Pawn():
 
 
 def change_move(k):
+    """
+    changes the property of the move such as whose_move to the opposite
+    :param k:
+    :return:
+    """
     k.whose_move = 'black' if k.whose_move == 'white' else 'white'
 
 
@@ -240,6 +245,13 @@ def get_pos(x, y):
 
 
 def draw_bishop(col, screen, num):
+    '''
+    draws bishop with number i
+    :param col:
+    :param screen:
+    :param num:
+    :return:
+    '''
     if col['bishops'][num].x > 1000:
         return None
     if col['bishops'][num].colour == 'white':
@@ -289,6 +301,9 @@ def draw_bishop(col, screen, num):
 
 
 def draw_knight(col, screen, num):
+    ''''
+    draws knight
+    '''
     if col['knights'][num].x > 1000:
         return None
     if col['knights'][num].colour == 'white':
@@ -315,6 +330,12 @@ def draw_knight(col, screen, num):
 
 
 def draw_king(col, screen):
+    '''
+    draws a king
+    :param col:
+    :param screen:
+    :return:
+    '''
     if col['king'].x > 1000:
         return None
     if col['king'].colour == 'white':
@@ -340,6 +361,12 @@ def draw_king(col, screen):
 
 
 def draw_queen(col, screen):
+    '''
+    draws a queen with colour col
+    :param col:
+    :param screen:
+    :return:
+    '''
     if col['queen'].x > 1000:
         return None
     if col['queen'].colour == 'white':
@@ -367,6 +394,13 @@ def draw_queen(col, screen):
 
 
 def draw_rock(col, screen, num):
+    '''
+    draws a rock with number num and colour col
+    :param col:
+    :param screen:
+    :param num:
+    :return:
+    '''
     if col['rocks'][num].x > 1000:
         return None
     if col['rocks'][num].colour == 'white':
@@ -395,6 +429,13 @@ def draw_rock(col, screen, num):
 
 
 def draw_pawn(col, screen, num):
+    '''
+    draw pawn with number num and colour col
+    :param col:
+    :param screen:
+    :param num:
+    :return:
+    '''
     if col['pawns'][num].x > 1000:
         return None
     if col['pawns'][num].colour == 'white':
@@ -484,7 +525,10 @@ def draw_all(screen, white, black, x_sp=-1, y_sp=-1, todrawlist=([], [], [], [])
         pygame.draw.line(screen, (0, 0, 0), (10, i * 90 + 10), (720, i * 90 + 10), 2)
         pygame.draw.line(screen, (0, 0, 0), (10 + i * 90, 10), (10 + i * 90, 720), 2)
 
-
+'''
+every mark_pos_#entername#
+shows all spots for figures to g and to hit
+'''
 def mark_pos_king(screen, col1, col2):
     listtomovex = []
     listtomovey = []
@@ -1788,6 +1832,14 @@ def mark_pos_pawn(screen, col1, col2, num):
 
 
 def check_if_anything(screen, col, x, y):
+    '''
+    checks if there is any figure at spot x y
+    :param screen:
+    :param col:
+    :param x:
+    :param y:
+    :return:
+    '''
     s = '###'
     if col['king'].x == x and col['king'].y == y:
         s = 'king'
@@ -1813,40 +1865,6 @@ def check_if_anything(screen, col, x, y):
             return [s, str(i)]
     return [s, str(-2)]
 
-
-def check_check_xd(screen, col1, col2, k: Move):
-    x1 = col1['king'].x
-    y1 = col1['king'].y
-    tohitx = []
-    tohity = []
-    listtocheck = mark_pos_queen(screen, col2, col1)
-    tohitx += listtocheck[2]
-    tohity += listtocheck[3]
-    listtocheck = mark_pos_king(screen, col2, col1)
-    tohity += listtocheck[3]
-    tohitx += listtocheck[2]
-    for i in range(len(col2['pawns'])):
-        listtocheck = mark_pos_pawn(screen, col2, col1, i)
-        tohitx += listtocheck[2]
-        tohity += listtocheck[3]
-    for i in range(len(col2['rocks'])):
-        listtocheck = mark_pos_rock(screen, col2, col1, i)
-        tohitx += listtocheck[2]
-        tohity += listtocheck[3]
-    for i in range(len(col2['bishops'])):
-        listtocheck = mark_pos_bishop(screen, col2, col1, i)
-        tohitx += listtocheck[2]
-        tohity += listtocheck[3]
-    for i in range(len(col2['knights'])):
-        listtocheck = mark_pos_knight(screen, col2, col1, i)
-        tohitx += listtocheck[2]
-        tohity += listtocheck[3]
-    for i in range(len(tohitx)):
-        if tohitx[i] == x1 and tohity[i] == y1:
-            if col1 == 'white':
-                k.white_check = True
-            else:
-                k.black_check = True
 
 
 def main():
@@ -1899,13 +1917,6 @@ def main():
     pawntocheck = Pawn('green', 100)
     font = pygame.font.Font(None, 25)
     while True:
-        pare = 'white' if k.whose_move == 'black' else 'black'
-        check_check_xd(screen, eval(k.whose_move), eval(pare), k)
-        if k.white_check:
-            text = font.render("white check", True, black)
-        elif k.black_check:
-            text = font.render('black check', True, black)
-
         dt = clock.tick(100) / 1000.0
         for event in pygame.event.get():
             if event.type == pygame.QUIT or \
